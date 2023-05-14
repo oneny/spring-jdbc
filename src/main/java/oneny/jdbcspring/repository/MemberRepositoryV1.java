@@ -1,17 +1,29 @@
 package oneny.jdbcspring.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import oneny.jdbcspring.connection.DBConnectionUtil;
 import oneny.jdbcspring.domain.Member;
+import org.springframework.jdbc.support.JdbcUtils;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.NoSuchElementException;
 
+/**
+ * JDBC - DataSource 사용, JdbcUtils 사용
+ */
 @Slf4j
-public class MemberRepositoryVO {
+public class MemberRepositoryV1 {
 
-  private static Connection getConnection() {
-    return DBConnectionUtil.getConnection();
+  private final DataSource dataSource;
+
+  public MemberRepositoryV1(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
+  private Connection getConnection() throws SQLException {
+    Connection con = dataSource.getConnection();
+    log.info("get connection={}, class={}", con, con.getClass());
+    return con;
   }
 
   public Member save(Member member) throws SQLException {
@@ -107,28 +119,32 @@ public class MemberRepositoryVO {
   }
 
   private void close(Connection con, Statement stmt, ResultSet rs) {
-    if (rs != null) {
-      try {
-        rs.close();
-      } catch (SQLException e) {
-        log.info("error", e);
-      }
-    }
+    JdbcUtils.closeResultSet(rs);
+    JdbcUtils.closeStatement(stmt);
+    JdbcUtils.closeConnection(con);
 
-    if (stmt != null) {
-      try {
-        stmt.close();
-      } catch (SQLException e) {
-        log.info("error", e);
-      }
-    }
-
-    if (con != null) {
-      try {
-        con.close();
-      } catch (SQLException e) {
-        log.info("error", e);
-      }
-    }
+//    if (rs != null) {
+//      try {
+//        rs.close();
+//      } catch (SQLException e) {
+//        log.info("error", e);
+//      }
+//    }
+//
+//    if (stmt != null) {
+//      try {
+//        stmt.close();
+//      } catch (SQLException e) {
+//        log.info("error", e);
+//      }
+//    }
+//
+//    if (con != null) {
+//      try {
+//        con.close();
+//      } catch (SQLException e) {
+//        log.info("error", e);
+//      }
+//    }
   }
 }
