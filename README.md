@@ -12,3 +12,5 @@
 - `command + shift + enter` - 다음 줄로 커서 이동
 - `iter` - for 문 만들어 줌
 - `command + option + N` - 인라인으로 합치기
+- `shift + F6` - rename
+- `command + F6` - 파라미터 순서 바꿀 수 있음
